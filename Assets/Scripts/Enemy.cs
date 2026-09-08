@@ -5,18 +5,26 @@ namespace EnemyGeneration
     [RequireComponent(typeof(Rigidbody))]
     public class Enemy : MonoBehaviour
     {
+        private Target _target;
         private float _moveSpeed;
-        private Vector3 _moveDirection;
-
-        public void Setup(Vector3 direction, float speed)
-        {
-            _moveDirection = direction.normalized;
-            _moveSpeed = speed;
-        }
 
         private void Update()
         {
-            transform.position += _moveDirection * _moveSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _moveSpeed * Time.deltaTime);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.GetComponent<Target>() == false)
+                return;
+
+            Destroy(gameObject);
+        }
+
+        public void Setup(Target target, float speed)
+        {
+            _target = target;
+            _moveSpeed = speed;
         }
     }
 }
